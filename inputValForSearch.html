@@ -129,14 +129,21 @@
 function search(value){
 	if(value == '') return;
 	var searchKeyWord = value;
-	var re = new RegExp(searchKeyWord,"gi");;//正規比對
+	var re = new RegExp("[^>]"+searchKeyWord,"gi");;//正規比對
 	var resultHTML = '';
 
 	if(jsonFormat.status === "OK"){
 		var longname = jsonFormat.results[0].address_components;
 		for(var i=0; i<longname.length; i++){
 			if(longname[i]['long_name'].match(re) !== null){
-				resultHTML += '<li>'+longname[i]['long_name'].replace(searchKeyWord,'<b style="font-weight:bold;">'+searchKeyWord+'</b>');+'</li>';
+        var longnameArray = longname[i]['long_name'].match(re);
+        var j = 0;
+        var str = longname[i]['long_name'];
+        while(j < longnameArray.length){
+          str = str.replace(re,'<b style="font-weight:bold;">'+searchKeyWord+'</b>');
+          j++;
+        }
+				resultHTML += '<li>'+str+'</li>';
 			};
 		}
 	};	
