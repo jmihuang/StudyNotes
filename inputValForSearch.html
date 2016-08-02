@@ -38,6 +38,9 @@
   		font-size: 16px;
   		padding:5px;
   	}
+    .result li b{
+      font-weight:bold;
+    }
   	.result li:nth-child(odd){
   		background-color: #a0e0e8;
   	}
@@ -80,12 +83,12 @@
                "types" : [ "locality", "political" ]
             },
             {
-               "long_name" : "Santa Clara County",
+               "long_name" : "Santa Clbra County",
                "short_name" : "Santa Clara County",
                "types" : [ "administrative_area_level_2", "political" ]
             },
             {
-               "long_name" : "California",
+               "long_name" : "Califbrnib",
                "short_name" : "CA",
                "types" : [ "administrative_area_level_1", "political" ]
             },
@@ -129,7 +132,7 @@
 function search(value){
 	if(value == '') return;
 	var searchKeyWord = value;
-	var re = new RegExp("[^>]"+searchKeyWord,"gi");;//正規比對
+	var re = new RegExp(searchKeyWord,"gi");//正規比對
 	var resultHTML = '';
 
 	if(jsonFormat.status === "OK"){
@@ -137,10 +140,13 @@ function search(value){
 		for(var i=0; i<longname.length; i++){
 			if(longname[i]['long_name'].match(re) !== null){
         var longnameArray = longname[i]['long_name'].match(re);
+        console.log(longnameArray);
         var j = 0;
         var str = longname[i]['long_name'];
         while(j < longnameArray.length){
-          str = str.replace(re,'<b style="font-weight:bold;">'+searchKeyWord+'</b>');
+          var reStripTag = new RegExp(+longnameArray[j]+'([^</b>])',"gi");//正規比對
+          str = str.replace(longnameArray[j],'<b>'+longnameArray[j]+'</b>');
+        console.log(str);
           j++;
         }
 				resultHTML += '<li>'+str+'</li>';
