@@ -58,7 +58,7 @@
 <ul class="result" id="result">
 	<li>尚無搜尋資料</li>
 </ul></div>
-	
+<b></b>	
 </body>
 </html>
 
@@ -140,19 +140,24 @@ function search(value){
 		for(var i=0; i<longname.length; i++){
 			if(longname[i]['long_name'].match(re) !== null){
         var longnameArray = longname[i]['long_name'].match(re);
-        console.log(longnameArray);
-        var j = 0;
-        var str = longname[i]['long_name'];
-        while(j < longnameArray.length){
-          var reStripTag = new RegExp(+longnameArray[j]+'([^</b>])',"gi");//正規比對
-          str = str.replace(longnameArray[j],'<b>'+longnameArray[j]+'</b>');
-        console.log(str);
-          j++;
-        }
-				resultHTML += '<li>'+str+'</li>';
+
+        //from http://jsfiddle.net/UPs3V/291/
+        var src_str = longname[i]['long_name'];
+        var term = searchKeyWord;
+        term = term.replace(/(\s+)/,"(<[^>]+>)*$1(<[^>]+>)*");
+        var pattern = new RegExp("("+term+")", "gi");
+
+        src_str = src_str.replace(pattern, "<b>$1</b>");
+        src_str = src_str.replace(/(<b>[^<>]*)((<[^>]+>)+)([^<>]*<\/b>)/,"$1</b>$2<b>$4");
+				resultHTML += '<li>'+src_str+'</li>';
 			};
 		}
 	};	
+
+
+
+
+
 
 	if( resultHTML === ''){
 		resultHTML += '<li>無搜尋資料</li>';
