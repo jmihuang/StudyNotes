@@ -130,34 +130,49 @@
 
 
 function search(value){
-	if(value !== ''){ 
-	var searchKeyWord = value;
-	var re = new RegExp(searchKeyWord,"gi");//正規比對
-	var resultHTML = '';
+  var resultHTML = '';
+  if(value !== ''){ 
+      var searchKeyWord = value;
+      var re = new RegExp(searchKeyWord,"gi");//正規比對
 
-	if(jsonFormat.status === "OK"){
-		var longname = jsonFormat.results[0].address_components;
-		for(var i=0; i<longname.length; i++){
-			if(longname[i]['long_name'].match(re) !== null){
-        var longnameArray = longname[i]['long_name'].match(re);
+    	if(jsonFormat.status === "OK"){
+    		var longname = jsonFormat.results[0].address_components;
+    		for(var i=0; i<longname.length; i++){
+    			if(longname[i]['long_name'].match(re) !== null){
+            var longnameArray = longname[i]['long_name'].match(re);
+            var src_str = longname[i]['long_name'];
+            //採用jscookbook 1-5教學
+            resultHTML += heightLightKeyword(src_str,searchKeyWord);
+    			};
+    		}
+       }
+  }else{
+    resultHTML += '<li>無搜尋資料</li>';
+  };	
 
-        //from http://jsfiddle.net/UPs3V/291/
-        var src_str = longname[i]['long_name'];
-        var term = searchKeyWord;
-        term = term.replace(/(\s+)/,"(<[^>]+>)*$1(<[^>]+>)*");
-        var pattern = new RegExp("("+term+")", "gi");
-
-        src_str = src_str.replace(pattern, "<b>$1</b>");
-        src_str = src_str.replace(/(<b>[^<>]*)((<[^>]+>)+)([^<>]*<\/b>)/,"$1</b>$2<b>$4");
-				resultHTML += '<li>'+src_str+'</li>';
-			};
-		}
-   }
-	};	
-
-
-
-
+    
+    function heightLightKeyword(src_str,searchKeyWord){
+        var str = src_str;
+        var re = new RegExp("("+searchKeyWord+")", "gi");
+        var matchArray;
+        var resultStr = '<li>';
+        var first = 0; 
+        var last = 0;
+        while((matchArray = re.exec(str)) != null){
+           first = matchArray.index;
+          //加入非匹配字串
+           resultStr += str.substring(first,last);
+          
+          //加入匹配字串
+           resultStr += '<span style="color:red;">'+ matchArray[0] + '</span>';
+           last = re.lastIndex;
+          console.log(resultStr);
+        }
+        //加入字尾
+        resultStr += str.substring(last,str.length);
+        resultStr += '</li>';
+        return resultStr;
+  }
 
 
 	if( resultHTML === ''){
