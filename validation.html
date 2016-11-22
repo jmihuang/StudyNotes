@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
+</head>
+  <style>
+    body{
+      line-height: 24px;
+      font-family: sans-serif,'Microsoft JhengHei';
+      color:#333;
+    }
+    .contact{
+      width: 600px;
+      margin: 0 auto;
+    }
+    .input-field{
+      position:relative;
+    }
+    .input-field .error{
+      position:absolute;
+      top:0;
+      right:0;
+      color:red;
+    }
+
+  	
+  </style>
+<body>  
+<section class="contact">
+  <div class="form form_inline" id="form">
+    <div class="input-field">
+      <label for="name">聯絡人</label>
+      <input type="text" name="name" placeholder="必填" onkeyup="value=value.replace(/[\W_]/g,'')">
+    </div>
+    <div class="input-field">
+      <label for="company">公司名稱</label>
+         <input type="text" name="company">
+    </div>
+    <div class="input-field">
+      <label for="phone">聯絡手機</label>
+      <input type="text" name="phone" placeholder="必填">
+    </div>
+    <div class="input-field">
+      <label for="mail">聯絡信箱</label>
+      <input type="text" name="mail" >
+    </div>
+    <div class="input-field">
+      <label for="password">密碼</label>
+      <input name="password" type="password">
+    </div>
+     <div class="input-field">
+       <label for="password">再次確認密碼</label>
+       <input name="repassword" type="password">
+    </div>
+     <div class="textarea-field">
+        <label for="comment">需求說明</label></br>
+        <textarea rows="8" cols="0"  name="comment" placeholder="必填 請簡述訂製需求"></textarea>
+    </div>
+    <button class="button" type="text" id="">送出表單</button>
+  </div>
+</section>
+	
+</body>
+</html>
+<script src="js/validation.js"></script>
+<script>
+  var constraints = {
+  phone:{
+    format:{
+      required: true,
+      type:'input',
+      pattern: /^[09]{2}[0-9]{8}$/,
+      errorMessage: '格式錯誤',
+      emptyMessage: '不能為空值'
+    }
+  },
+  password:{
+    format:{
+      required: true,
+      type:'input',
+      pattern: /(?=^[A-Za-z0-9]{6,12}$)((?=.*[a-z])(?=.*[0-9]))^.*$/,
+      errorMessage: '格式錯誤',
+      emptyMessage: '不能為空值'
+    }
+  },
+  mail:{
+    format:{
+      required: true,
+      type:'input',
+      pattern:/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      errorMessage: '不是有效信箱',
+      emptyMessage: '不能為空值'
+    }
+  },
+  name:{
+    format:{
+      required: true,
+      type:'input',
+      pattern:/[^\W_]+/,
+      errorMessage: '名稱不能有特殊字元',
+      emptyMessage: '不能為空值'
+    }
+  }
+} 
+var formID = 'form';
+document.getElementById(formID).onclick=function(event){
+  validation(formID,constraints,function Func(){
+    alert('SEND');
+  });
+  event.preventDefault();
+  return false;
+};
+
+
+
+</script>

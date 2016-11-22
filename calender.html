@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
+</head>
+  <style>
+    ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+.canlendar{
+  width: 800px;
+}
+/* Month header */
+.month {
+    text-align:center;
+    padding: 70px 25px;
+    width: 100%;
+    background: #1abc9c;
+    box-sizing: border-box;
+}
+
+/* Month list */
+.month ul {
+    margin: 0;
+    padding: 0;
+}
+
+.month ul li {
+    color: white;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+/* Previous button inside month header */
+.month .prev {
+    float: left;
+    padding-top: 10px;
+    width:30px;
+    height:30px;
+    cursor:pointer
+      
+}
+.month .prev:active,.month .prev:focus{
+  background-color:rgba(255,255,255, .6);
+}
+
+/* Next button */
+.month .next {
+    float: right;
+    padding-top: 10px;
+    width:30px;
+    height:30px;
+    cursor:pointer
+}
+.month .next:active,.month .next:focus{
+  background-color:rgba(255,255,255, .6);
+}
+
+
+/* Weekdays (Mon-Sun) */
+.weekdays {
+    margin: 0;
+    padding: 10px 0;
+    background-color:#ddd;
+}
+
+.weekdays li {
+    display: inline-block;
+    width: 13.6%;
+    color: #666;
+    text-align: center;
+}
+
+/* Days (1-31) */
+.days {
+    padding: 10px 0;
+    background: #eee;
+    margin: 0;
+}
+
+.days li {
+    list-style-type: none;
+    display: inline-block;
+    width: 13.6%;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size:12px;
+    color:#777;
+}
+
+/* Highlight the "current" day */
+.days li .active {
+    padding: 5px;
+    background: #1abc9c;
+    color: white !important
+}
+  	
+  </style>
+<body><script src="https://code.jquery.com/jquery-1.11.3.js">
+</script><div class="canlendar" id="cal">
+<div class="month"> 
+  <ul>
+    <li class="prev" id="prev">&#10094;</li>
+    <li class="next" id="next">&#10095;</li>
+    <li id="label">August  2016</span>
+    </li>
+  </ul>
+</div>
+
+<ul class="weekdays" >
+  <li>Su</li>
+  <li>Mo</li>
+  <li>Tu</li>
+  <li>We</li>
+  <li>Th</li>
+  <li>Fr</li>
+  <li>Sa</li>
+  
+</ul>
+
+<ul class="days temp" id="days"> 
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
+  <li>6</li>
+  <li>7</li>
+  <li>8</li>
+  <li>9</li>
+  <li><span class="active">10</span></li>
+  <li>11</li>
+  ...etc
+</ul>
+  </div>
+	
+</body>
+</html>
+
+<script>
+/*Reference https://code.tutsplus.com/tutorials/how-to-build-a-beautiful-calendar-widget--net-12538*/
+
+var CANLENDAR = function (){
+  var wrap, label , 
+      months = ["January", "February", "March", "April", "May", "June", "July","August","Setempter","October","November","December"];
+ 
+  function init(newWrap){
+    wrap = $(newWrap || "#cal"); 
+  label    = wrap.find("#label"); 
+  wrap.find("#prev").bind("click", function () { switchMonth(false); }); 
+  wrap.find("#next").bind("click", function () { switchMonth(true);  }); 
+  label.bind("click", function () { switchMonth(null, new Date().getMonth(), new Date().getFullYear()); });        
+  label.click();
+  }
+
+  function switchMonth(next,month,year){
+    var curr = label.text().trim().split(" "), calendar, tempYear =  parseInt(curr[0], 10);        
+    if (!month) { 
+      if (next) { 
+          if (curr[2] === "December") { 
+              month = 0; 
+          } else { 
+              month = months.indexOf(curr[2]) + 1; 
+          } 
+          
+      } else { 
+          //pre
+          if (curr[2] === "January") { 
+              month = 11; 
+          } else { 
+              month = months.indexOf(curr[2]) - 1; 
+              
+          } 
+      } 
+  }
+    if (!year) { 
+      if (next && month === 0) { 
+          year = tempYear + 1; 
+      } else if (!next && month === 11) { 
+          year = tempYear - 1; 
+      } else { 
+          year = tempYear; 
+      } 
+  }
+    calendar =  createCal(year, month);
+    $(wrap).find("#days").empty().prepend(calendar.calendar()); 
+    $('#label').text(calendar.label); 
+  }
+  
+  
+  function createCal(year,month){
+          var day = 1, i, j, html ,today,haveDays = true,  
+              startDay = new Date(year, month, day).getDay(), 
+              daysInMonths = [31, (((year%4==0)&&(year%100!=0))||(year%400==0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 
+              today = new Date().getDate();
+          calendar = [];
+          var i = 0;
+          while (haveDays) { 
+            calendar[i] = []; 
+            for (j = 0; j < 7; j++) { 
+                if (i === 0) { 
+                    if (j === startDay) { 
+                        calendar[i][j] = day++; 
+                        startDay++; 
+                    } 
+                } else if (day <= daysInMonths[month]) { 
+                    calendar[i][j] = day++; 
+                } else { 
+                    calendar[i][j] = ""; 
+                    haveDays = false; 
+                } 
+                if (day > daysInMonths[month]) { 
+                    haveDays = false; 
+                } 
+            } 
+            i++; 
+        }
+
+          return {   
+           calendar : function () { 
+               /* returns a jquery object of the calendar */
+               html = '';
+               for(var d = 0; d < calendar.length ; d++){
+                 for(var k = 0; k < 7 ; k++){
+                    if(calendar[d][k] !== undefined){            
+                       if(year ===new Date().getFullYear() && month ===new Date().getMonth() && calendar[d][k] === today){
+                         html += "<li><span class=\"active\">"+calendar[d][k]+"</span></li>"
+                       }else{
+                         html += "<li>"+calendar[d][k]+"</li>";
+                       };
+                    }else{
+                         html += "<li></li>";
+                    } 
+                  }  
+               }
+               return html;
+             }, 
+             label:year + '  ' +months[month]  
+          }
+      }
+   
+  return {
+    init : init,
+    switchMonth : switchMonth, 
+    createCal   : createCal
+  }
+  
+}
+
+var cal = CANLENDAR();
+cal.init();
+
+
+var date = new Date();
+var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+
+
+</script>

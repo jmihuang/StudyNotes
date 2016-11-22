@@ -130,7 +130,7 @@
 
 
 function search(value){
-	if(value == '') return;
+	if(value !== ''){ 
 	var searchKeyWord = value;
 	var re = new RegExp(searchKeyWord,"gi");//正規比對
 	var resultHTML = '';
@@ -152,6 +152,7 @@ function search(value){
 				resultHTML += '<li>'+src_str+'</li>';
 			};
 		}
+   }
 	};	
 
 
